@@ -72,8 +72,8 @@ int main(int argc, char *argv[]){
 					remplitStruct(tab+i, Prog[i]);
 				}
 
-				for (int pc = 0; i<len; i++){
-					fonction(tab[i], pile, &pc);
+				for (int pc = 0; pc<len; pc++){
+					fonction(tab[pc], pile, &pc);
 				}
 
 				free(tab);
@@ -81,7 +81,7 @@ int main(int argc, char *argv[]){
 					free(Prog[i]);
 				}
 				free(Prog);
-				
+
 			} else {
 				printf("Erreur dans la lecture du fichier hexa.txt");
 			}

@@ -1,3 +1,8 @@
+#include "execution.h"
+
+#include <stdio.h>
+#include <stdlib.h>
+
 void remplitStruct(instructionHexa* structu, char* instruct){
     char a[3], b[5];
     for (int i = 0; i<2; i++){
@@ -29,7 +34,7 @@ void ReadLowLangageFile(FILE* fic, char** Prog){ // on presuppose que le fichier
 }
 
 void fonction(instructionHexa instruct, short* pile, int* ppc){
-    switch(instruct->var){
+    switch(instruct.var){
         case 0: pop(instruct, pile); break;
         case 1: push(instruct, pile); break;
         case 2: iPop(instruct, pile); break;
