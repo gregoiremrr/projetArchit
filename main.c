@@ -1,5 +1,6 @@
 #include "fichier.h"
 #include "instruction.h"
+#include "execution.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -40,7 +41,6 @@ int main(int argc, char *argv[]){
 			fclose(fichierMachine);
 		}
 		
-		free(OK);
 		for (int i = 0; i<len; i++){
 			free(instructions[i]->adresse->nom);
 			free(instructions[i]->commande->nomValeur);
@@ -49,6 +49,44 @@ int main(int argc, char *argv[]){
 			free(instructions[i]);
 		}
 		free(instructions);
+
+		if(*OK == 1){
+			FILE* fic=NULL;
+			fic= fopen("hexa.txt","r");
+
+			if (fic != NULL){
+				short pile[4000];
+
+				char **Prog=malloc(len*sizeof(char*));
+
+				for(int i=0;i<len;i++){
+					Prog[i]=malloc(8*sizeof(char));
+				}
+
+				ReadLowLangageFile(fic,Prog);
+				fclose(fic);
+
+				instructionHexa* tab = malloc(len*sizeof(instructionHexa));
+
+				for (int i = 0; i<len; i++){
+					remplitStruct(tab+i, Prog[i]);
+				}
+
+				for (int pc = 0; i<len; i++){
+					fonction(tab[i], pile, &pc);
+				}
+
+				free(tab);
+				for(int i = 0; i<len; i++){
+					free(Prog[i]);
+				}
+				free(Prog);
+				
+			} else {
+				printf("Erreur dans la lecture du fichier hexa.txt");
+			}
+		}
+		free(OK);
 	}
 	else
 		printf("Erreur lors de l'ouverture du fichier");
