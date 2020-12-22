@@ -1,0 +1,11 @@
+ic: read 1000
+    push 1000
+    push# 0
+    op 0
+    jpc findvnsdkv
+    push 1000
+    op 10
+    pop 1000
+    write 1000
+    jmpj ici
+fin: halth
