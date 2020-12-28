@@ -5,8 +5,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-unsigned short tab[4000] = {0};
-
 int main(int argc, char *argv[]){
 
 	FILE* fichierAssembleur = NULL;
@@ -21,7 +19,7 @@ int main(int argc, char *argv[]){
 		*OK = 1;
 
 		Instruction** instructions = malloc((len+1)*sizeof(Instruction*));
-		for (int i = 0; i<=len; i++){
+		for (int i = 0; i <= len; i++){
 			instructions[i] = malloc(sizeof(Instruction));
 			instructions[i]->commande = malloc(sizeof(Commande));
 			instructions[i]->adresse = malloc(sizeof(Adresse));
@@ -56,40 +54,39 @@ int main(int argc, char *argv[]){
 
 			if (fic != NULL){
 				short pile[4000];
+				char** Prog = malloc((len+1)*sizeof(char*));
 
-				char **Prog=malloc(len*sizeof(char*));
-
-				for(int i=0;i<len;i++){
-					Prog[i]=malloc(8*sizeof(char));
+				for(int i = 0; i <= len; i++){
+					Prog[i] = malloc(8*sizeof(char));
 				}
 
-				ReadLowLangageFile(fic,Prog);
+				ReadLowLangageFile(fic, Prog);
 				fclose(fic);
 
-				instructionHexa* tab = malloc(len*sizeof(instructionHexa));
+				instructionHexa* tab = malloc((len+1)*sizeof(instructionHexa));
 
-				for (int i = 0; i<len; i++){
+				for (int i = 0; i <= len; i++){
 					remplitStruct(tab+i, Prog[i]);
 				}
 
-				for (int pc = 0; pc<len; pc++){
+				for (int pc = 0; pc <= len; pc++){
 					fonction(tab[pc], pile, &pc);
 				}
 
 				free(tab);
-				for(int i = 0; i<len; i++){
+				for(int i = 0; i <= len; i++){
 					free(Prog[i]);
 				}
 				free(Prog);
 
 			} else {
-				printf("Erreur dans la lecture du fichier hexa.txt");
+				printf("Erreur dans la lecture du fichier hexa.txt\n");
 			}
 		}
 		free(OK);
 	}
 	else
-		printf("Erreur lors de l'ouverture du fichier");
+		printf("Erreur lors de l'ouverture du fichier\n");
 
 	return 0;
 }

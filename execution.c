@@ -18,10 +18,9 @@ void remplitStruct(instructionHexa* structu, char* instruct){
 }
 
 void ReadLowLangageFile(FILE* fic, char** Prog){ // on presuppose que le fichier texte hexa.txt est deja ouvert
-    char c = 'a';
+    char c = fgetc(fic);
     int i = 0, j = 0;
-    while(c != EOF){
-        c = fgetc(fic);
+    while(c != EOF && c != -1){
         if(c == '\n' || c == EOF){
             Prog[i][j] = '\0';
             i++;
@@ -30,6 +29,7 @@ void ReadLowLangageFile(FILE* fic, char** Prog){ // on presuppose que le fichier
             Prog[i][j] = c;
             j++;
         }
+        c = fgetc(fic);
     }
 }
 
