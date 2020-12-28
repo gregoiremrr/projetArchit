@@ -33,80 +33,176 @@ void ReadLowLangageFile(FILE* fic, char** Prog){ // on presuppose que le fichier
     }
 }
 
-void fonction(instructionHexa instruct, short* pile, int* ppc){
+void fonction(instructionHexa instruct, short* pile, int* ppc, int* psp){
     switch(instruct.var){
-        case 0: pop(instruct, pile); break;
-        case 1: push(instruct, pile); break;
-        case 2: iPop(instruct, pile); break;
-        case 3: iPush(instruct, pile); break;
-        case 4: push2(instruct, pile); break;
+        case 0: pop(instruct, pile, ppc, psp); break;
+        case 1: push(instruct, pile, ppc, psp); break;
+        case 2: iPop(instruct, pile, ppc, psp); break;
+        case 3: iPush(instruct, pile, ppc, psp; break;
+        case 4: push2(instruct, pile, ppc, psp); break;
         case 5: call(instruct, pile, ppc); break;
         case 6: ret(instruct, pile, ppc); break;
         case 7: jmp(instruct, pile, ppc); break;
-        case 8: jpc(instruct, pile, ppc); break;
+        case 8: jpc(instruct, pile, ppc, psp); break;
         case 9: write(instruct, pile); break;
         case 10: read(instruct, pile); break;
-        case 11: rnd(instruct, pile); break;
-        case 12: dup(instruct, pile); break;
-        case 13: op(instruct, pile); break;
+        case 11: rnd(instruct, pile, ppc, psp); break;
+        case 12: dup(instruct, pile, ppc, psp); break;
+        case 13: op(instruct, pile, ppc, psp); break;
         case 99: halt(instruct, pile);
   }
 }
 
-void pop(instructionHexa instruct, short* pile){
+void pop(instructionHexa instruct, short* pile, int* ppc, int* psp){
+    if (*psp > 0){
+        *psp--;
+        pile[x] = pile[psp];
+    } else {
+        printf("Segmentation fault (ligne %d)", );
+    }
+}
+
+void push(instructionHexa instruct, short* pile, int* ppc, int* psp){
+    short v=instruct->value;
+    *pile= *(pile+v);
+    pile++;
+}
+
+void iPop(instructionHexa instruct, short* pile, int* ppc, int* psp){
+    *(pile+(*pile))= *(pile-1);
+}
+
+void iPush(instructionHexa instruct, short* pile, int* ppc, int* psp){
 
 }
 
-void push(instructionHexa instruct, short* pile){
-
-}
-
-void iPop(instructionHexa instruct, short* pile){
-
-}
-
-void iPush(instructionHexa instruct, short* pile){
-
-}
-
-void push2(instructionHexa instruct, short* pile){
-
+void push2(instructionHexa instruct, short* pile, int* ppc, int* psp){
+    short v=instruct->value;
+    *(pile)=v;
 }
 
 void call(instructionHexa instruct, short* pile, int* ppc){
-
+    short v=instruct->value;
+    ppc++;
+    *ppc=*ppc+ v;
 }
 
 void ret(instructionHexa instruct, short* pile, int* ppc){
-
+    ppc--;
 }
 
 void jmp(instructionHexa instruct, short* pile, int* ppc){
-
+    *ppc=*ppc+(instruct->value);
 }
 
-void jpc(instructionHexa instruct, short* pile, int* ppc){
-
+void jpc(instructionHexa instruct, short* pile, int* ppc, int* psp){
+    pile--; //accede a la valeur sur le tas
+    int v= *pile;
+    if (v!=0){
+        *ppc=*ppc+instruct->value;
+    }
 }
 
 void write(instructionHexa instruct, short* pile){
-
+    printf("%d", *(pile+(instruct->value)));
 }
 
 void read(instructionHexa instruct, short* pile){
-
+    short x;
+    printf("rentrer une valeur qui sera mise dans la variable a l adresse %d : ",instruct.value);
+    scanf("%d",&x);
+    *(pile+(instruct.value))=x;
 }
 
-void rnd(instructionHexa instruct, short* pile){
-
+void rnd(instructionHexa instruct, short* pile, int* ppc, int* psp){
+    int nb=0;
+    srand(time(NULL));
+    nb=rand()%(instruct->value);
+    *pile=nb;
+    pile++;
 }
 
-void dup(instructionHexa instruct, short* pile){
-
+void dup(instructionHexa instruct, short* pile, int* ppc, int* psp){
+    *pile=*(pile-1);
+    pile++;
 }
 
-void op(instructionHexa instruct, short* pile){
+void op(instructionHexa instruct, short* pile, int* ppc, int* psp){
+    switch(instruct.value){
+    case 0:
+            pile--;
+            if (*(pile-1)==*pile){
+                *(pile-1)=1;
+            } else {*(pile-1)=0;}
+            break;
+    case 1:
+            pile--;
+            if (*(pile-1)!=*pile){
+                *(pile-1)=1;
+            } else {*(pile-1)=0;}
+            break;
 
+    case 2:
+            pile--;
+            if (*(pile-1)> *pile){
+                *(pile-1)=1;
+            } else {*(pile-1)=0;}
+            break;
+    case 3:
+        pile--;
+        if (*(pile-1)>= *pile){
+            *(pile-1)=1;
+        } else {*(pile-1)=0;}
+        break;
+    case 4:
+        pile--;
+        if (*(pile-1)< *pile){
+            *(pile-1)=1;
+        } else {*(pile-1)=0;}
+        break;
+    case 5:
+        pile--;
+        if (*(pile-1)>= *pile){
+            *(pile-1)=1;
+        } else {*(pile-1)=0;}
+        break;
+    case 6:
+        pile--;
+        *(pile-1)=*(pile-1)&*pile;
+        break;
+    case 8:
+        pile--;
+        *(pile-1)=*(pile-1)|*pile;
+        break;
+    case 9:
+        *(pile-1)= ~*(pile-1);
+        break;
+    case 10:
+        *(pile-1)=-*(pile-1);
+        break;
+    case 11:
+        pile--;
+        *(pile-1)=*(pile-1)+*pile;
+        break;
+    case 12:
+        pile--;
+        *(pile-1)=*(pile-1) - *pile;
+        break;
+    case 13:
+        pile--;
+        *(pile-1)=*(pile-1)**pile;
+        break;
+    case 14:
+        pile--;
+        *(pile-1)=*(pile-1)/(*pile);
+        break;
+    case 15:
+        pile--;
+        *(pile-1)=*(pile-1)%(*pile);
+        break;
+    default:
+        printf("Le code d operation est incorrect, %d doit etre un entier compris entre 0 et 15 inclus", instruct.value);
+  }
 }
 
 void halt(instructionHexa instruct, short* pile){

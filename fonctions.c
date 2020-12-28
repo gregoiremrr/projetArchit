@@ -115,7 +115,7 @@ void ret(instructionHexa * instruct,short* pile, int* ppc){
 void jmp(instructionHexa *instruct, short* pile, int* ppc){
   *ppc=*ppc+(instruct->value);
 }
-void jpc(instructionHexa * instruct, short* pile,int* ppc){
+void jpc(instructionHexa * instruct, short* pile, int* ppc){
   pile--; //accede a la valeur sur le tas
   int v= *pile;
   if (v!=0){

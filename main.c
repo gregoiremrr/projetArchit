@@ -54,6 +54,8 @@ int main(int argc, char *argv[]){
 
 			if (fic != NULL){
 				short pile[4000];
+				short* sp;
+				*sp = 0;
 				char** Prog = malloc((len+1)*sizeof(char*));
 
 				for(int i = 0; i <= len; i++){
