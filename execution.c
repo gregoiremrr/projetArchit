@@ -58,7 +58,7 @@ void pop(instructionHexa instruct, short* pile, int* ppc, int* psp){
         *psp--;
         pile[x] = pile[psp];
     } else {
-        printf("Segmentation fault (ligne %d)", );
+        printf("Segmentation fault (ligne %d)", *ppc);
     }
 }
 
@@ -123,8 +123,15 @@ void rnd(instructionHexa instruct, short* pile, int* ppc, int* psp){
 }
 
 void dup(instructionHexa instruct, short* pile, int* ppc, int* psp){
-    *pile=*(pile-1);
-    pile++;
+
+    if ((*psp+1)<=3999){
+      pile[*(psp)]=pile[*(psp)-1];
+      *(psp)++;
+    } else{
+        printf("Segmentation fault (ligne %d)", *ppc);
+    }
+
+
 }
 
 void op(instructionHexa instruct, short* pile, int* ppc, int* psp){
