@@ -34,205 +34,257 @@ void ReadLowLangageFile(FILE* fic, char** Prog){ // on presuppose que le fichier
     }
 }
 
-void fonction(instructionHexa instruct, short* pile, int* ppc, int* psp){
+void fonction(instructionHexa instruct, short* pile, int* ppc, int* psp, int len, int* OK2){
     switch(instruct.var){ // le membre instruct.var correspond au numero de la fonction
-        case 0: pop(instruct, pile, ppc, psp); break;
-        case 1: push(instruct, pile, ppc, psp); break;
-        case 2: iPop(instruct, pile, ppc, psp); break;
-        case 3: iPush(instruct, pile, ppc, psp); break;
-        case 4: push2(instruct, pile, ppc, psp); break;
-        case 5: call(instruct, pile, ppc); break;
-        case 6: ret(instruct, pile, ppc); break;
-        case 7: jmp(instruct, pile, ppc); break;
-        case 8: jpc(instruct, pile, ppc, psp); break;
-        case 9: write(instruct, pile); break;
-        case 10: read(instruct, pile); break;
-        case 11: rnd(instruct, pile, ppc, psp); break;
-        case 12: dup(instruct, pile, ppc, psp); break;
-        case 13: op(instruct, pile, ppc, psp); break;
-        case 99: halt(instruct, pile);
+        case 0: pop(instruct, pile, ppc, psp, OK2); break;
+        case 1: push(instruct, pile, ppc, psp, OK2); break;
+        case 2: iPop(instruct, pile, ppc, psp, OK2); break;
+        case 3: iPush(instruct, pile, ppc, psp, OK2); break;
+        case 4: push2(instruct, pile, ppc, psp, OK2); break;
+        case 5: call(instruct, pile, ppc, psp, len, OK2); break;
+        case 6: ret(instruct, pile, ppc, psp, OK2); break;
+        case 7: jmp(instruct, pile, ppc, len, OK2); break;
+        case 8: jpc(instruct, pile, ppc, psp, len, OK2); break;
+        case 9: write(instruct, pile, ppc, OK2); break;
+        case 10: read(instruct, pile, ppc, OK2); break;
+        case 11: rnd(instruct, pile, ppc, psp, OK2); break;
+        case 12: dup(instruct, pile, ppc, psp, OK2); break;
+        case 13: op(instruct, pile, ppc, psp, OK2); break;
+        case 99: halt(instruct, pile, ppc, len);
   }
 }
 
-void pop(instructionHexa instruct, short* pile, int* ppc, int* psp){
-    short x=instruct.value;
-    if (*psp > 0){
+void pop(instructionHexa instruct, short* pile, int* ppc, int* psp, int* OK2){
+    if (*psp > 0 && instruct.value < 4000 && instruct.value > -1){
         (*psp)--;
-        pile[x] = pile[*psp];
+        pile[instruct.value] = pile[*psp];
     } else {
-        printf("Segmentation fault (ligne %d)", *ppc);
+        *OK2 = 0;
+        printf("Segmentation fault (ligne %d)\n", *ppc);
     }
 }
 
-void push(instructionHexa instruct, short* pile, int* ppc, int* psp){
-    if ((*psp+1)>3999){
-      printf("Segmentation fault (ligne %d)",*ppc);
-    } else{
-    short v=instruct.value;
-    pile[*psp]= pile[v];
-    (*psp)++;
+void push(instructionHexa instruct, short* pile, int* ppc, int* psp, int* OK2){
+    if (*psp < 3999) {
+        pile[*psp] = pile[instruct.value];
+        (*psp)++;
+    } else {
+        *OK2 = 0;
+        printf("Segmentation fault (ligne %d)\n", *ppc);
     }
 }
 
-void iPop(instructionHexa instruct, short* pile, int* ppc, int* psp){
-    int n=pile[(*psp)-1]; //n est le contenu de la tete de pile
-    pile[n]= pile[(*psp)-1];
-}
-
-void iPush(instructionHexa instruct, short* pile, int* ppc, int* psp){
-  if ((*psp+1)>3999){
-    printf("Segmentation fault (ligne %d)",*ppc);}
-  else
-  {
-  int n=pile[(*psp)-1];
-  pile[(*psp)]=pile[n];
-  (*psp)++;
+void iPop(instructionHexa instruct, short* pile, int* ppc, int* psp, int* OK2){
+    if (*psp > 1 && pile[*psp-1] < 4000 && pile[*psp-1] > -1) {
+        pile[pile[*psp-1]] = pile[*psp-2];
+        *psp -= 2;
+    } else {
+        *OK2 = 0;
+        printf("Segmentation fault (ligne %d)\n", *ppc);
     }
 }
 
-void push2(instructionHexa instruct, short* pile, int* ppc, int* psp){
-  if ((*psp+1)>3999){
-    printf("Segmentation fault (ligne %d)",*ppc);}
-  else
-  {
-    short v=instruct.value;
-    pile[*psp]=v;
-    (*psp)++;
-  }
-}
-void call(instructionHexa instruct, short* pile, int* ppc){
-    short v=instruct.value;
-    (*ppc)++;
-    *ppc= *ppc + v;
-}
-
-void ret(instructionHexa instruct, short* pile, int* ppc){
-    (*ppc)--;
-}
-
-void jmp(instructionHexa instruct, short* pile, int* ppc){
-    *ppc=*ppc+(instruct.value);
-}
-
-void jpc(instructionHexa instruct, short* pile, int* ppc, int* psp){
-    (*ppc)--; //accede a la valeur sur le tas
-    int v= pile[--(*psp)];
-    if (v!=0){
-        *ppc=*ppc+instruct.value;
+void iPush(instructionHexa instruct, short* pile, int* ppc, int* psp, int* OK2){
+    if (pile[*psp-1] < 4000 && pile[*psp-1] > -1){
+        pile[*psp-1] = pile[pile[*psp-1]];
+    } else {
+        *OK2 = 0;
+        printf("Segmentation fault (ligne %d)\n", *ppc);
     }
 }
 
-void write(instructionHexa instruct, short* pile){
-    printf("%d", pile[instruct.value]);
-}
-
-void read(instructionHexa instruct, short* pile){
-    short x;
-    printf("rentrer une valeur qui sera mise dans la variable a l adresse %d : ",instruct.value);
-    scanf("%hd",&x);
-    pile[instruct.value]=x;
-}
-
-void rnd(instructionHexa instruct, short* pile, int* ppc, int* psp){
-  if ((*psp+1)>3999){
-    printf("Segmentation fault (ligne %d)",*ppc);}
-  else
-  {
-    int nb=0;
-    srand(time(NULL));
-    nb=rand()%(instruct.value);
-    pile[*psp]=nb;
-    (*psp)++;;
-  }
-}
-void dup(instructionHexa instruct, short* pile, int* ppc, int* psp){
-
-    if ((*psp+1)<=3999){
-      pile[*(psp)]=pile[*(psp)-1];
-      (*psp)++;
-    } else{
-        printf("Segmentation fault (ligne %d)", *ppc);
+void push2(instructionHexa instruct, short* pile, int* ppc, int* psp, int* OK2){
+    if (*psp < 3999) {
+        pile[*psp] = instruct.value;
+        (*psp)++;
+    } else {
+        *OK2 = 0;
+        printf("Segmentation fault (ligne %d)\n", *ppc);
     }
 }
 
-void op(instructionHexa instruct, short* pile, int* ppc, int* psp){
-    switch(instruct.value){
-    case 0:
-            (*psp)--;
-            if (pile[(*psp)-1]==pile[*psp]){
-                pile[(*psp)-1]=1;
-            } else {pile[(*psp)-1]=0;}
-            break;
-    case 1:
-            (*psp)--;
-            if (pile[(*psp)-1]!=pile[*psp]){
-                pile[(*psp)-1]=1;
-            } else {pile[(*psp)-1]=0;}
-            break;
+void call(instructionHexa instruct, short* pile, int* ppc, int* psp, int len, int* OK2){
+    if (*psp < 3999) {
+        pile[*psp] = *ppc + 1;
+        (*psp)++;
+        if (*ppc + instruct.value <= len + 1 && *ppc + instruct.value >= -1) {
+            *ppc += instruct.value;
+        } else {
+            *OK2 = 0;
+            printf("Appel de procedure impossible : l'instruction %d n'existe pas\n", *ppc + instruct.value);
+        }
+    } else {
+        *OK2 = 0;
+        printf("Segmentation fault (ligne %d)\n", *ppc);
+    }
+}
 
-    case 2:
-            (*psp)--;
-            if (pile[(*psp)-1]>pile[*psp]){
-                pile[(*psp)-1]=1;
-            } else {pile[(*psp)-1]=0;}
-            break;
-    case 3:
-            (*psp)--;
-            if (pile[(*psp)-1]>=pile[*psp]){
-                pile[(*psp)-1]=1;
-            } else {pile[(*psp)-1]=0;}
-            break;
-    case 4:
-            (*psp)--;
-            if (pile[(*psp)-1] < pile[*psp]){
-                pile[(*psp)-1]=1;
-            } else {pile[(*psp)-1]=0;}
-            break;
-    case 5:
-            (*psp)--;
-            if (pile[(*psp)-1] <= pile[*psp]){
-                pile[(*psp)-1]=1;
-            } else {pile[(*psp)-1]=0;}
-            break;
-    case 6:
-            (*psp)--;
-            pile[(*psp)-1]=pile[(*psp)-1]&pile[*psp];
-            break;
-    case 8:
-            (*psp)--;
-            pile[(*psp)-1]=pile[(*psp)-1] ^ pile[*psp];
-            break;
-    case 9:
-            pile[(*psp)-1]= ~ pile[(*psp)-1];
-            break;
-    case 10:
-            pile[(*psp)-1] = -pile[(*psp)-1];
-            break;
-    case 11:
-            (*psp)--;
-            pile[(*psp)-1]=pile[(*psp)-1] + pile[*psp];
-            break;
-    case 12:
-            (*psp)--;
-            pile[(*psp)-1]=pile[(*psp)-1] - pile[*psp];
-            break;
-    case 13:
-            (*psp)--;
+void ret(instructionHexa instruct, short* pile, int* ppc, int* psp, int* OK2){
+    if (*psp > 0) {
+        (*ppc)--;
+        *ppc = pile[*psp];
+    } else {
+        *OK2 = 0;
+        printf("Segmentation fault (ligne %d)\n", *ppc);
+    }
+}
+
+void jmp(instructionHexa instruct, short* pile, int* ppc, int len, int* OK2){
+    if (*ppc + instruct.value <= len+1 && *ppc + instruct.value >= -1) {
+        *ppc += instruct.value;
+    } else {
+        *OK2 = 0;
+        printf("Appel de procedure impossible : l'instruction %d n'existe pas\n", *ppc + instruct.value);
+    }
+}
+
+void jpc(instructionHexa instruct, short* pile, int* ppc, int* psp, int len, int* OK2){
+    (*psp)--;
+    if (pile[*psp] != 0){
+        if (*ppc + instruct.value <= len+1 && *ppc + instruct.value >= -1) {
+            *ppc += instruct.value;
+        } else {
+            *OK2 = 0;
+            printf("Appel de procedure impossible : l'instruction %d n'existe pas\n", *ppc + instruct.value);
+        }
+    }
+}
+
+void write(instructionHexa instruct, short* pile, int* ppc, int* OK2){
+    if (instruct.value < 4000 && instruct.value > -1) {
+        printf("%d\n", pile[instruct.value]);
+    } else {
+        *OK2 = 0;
+        printf("Segmentation fault (ligne %d)\n", *ppc);
+    }
+}
+
+void read(instructionHexa instruct, short* pile, int* ppc, int* OK2){
+    if (instruct.value < 4000 && instruct.value > -1) {
+        printf("Rentrer une valeur qui sera mise dans la variable a l'adresse %d : ",instruct.value);
+        scanf("%hd", pile + instruct.value);
+    } else {
+        *OK2 = 0;
+        printf("Segmentation fault (ligne %d)\n", *ppc);
+    }
+}
+
+void rnd(instructionHexa instruct, short* pile, int* ppc, int* psp, int* OK2){
+    if (*psp < 3999){
+        srand(time(NULL));
+        pile[*psp] = rand() % instruct.value;
+        (*psp)++;;
+    } else {
+        *OK2 = 0;
+        printf("Segmentation fault (ligne %d)\n", *ppc); 
+    }
+}
+
+void dup(instructionHexa instruct, short* pile, int* ppc, int* psp, int* OK2){
+    if (*psp < 3999){
+        pile[*psp]=pile[*psp-1];
+        (*psp)++;
+    } else {
+        *OK2 = 0;
+        printf("Segmentation fault (ligne %d)\n", *ppc);
+    }
+}
+
+void op(instructionHexa instruct, short* pile, int* ppc, int* psp, int* OK2){
+    if (*psp > 0 || instruct.value == 9 || instruct.value == 10) {
+        switch(instruct.value){
+            case 0:
+                (*psp)--;
+                if (pile[(*psp)-1]==pile[*psp]){
+                    pile[(*psp)-1]=1;
+                } else {
+                    pile[(*psp)-1]=0;
+                }
+                break;
+            case 1:
+                (*psp)--;
+                if (pile[(*psp)-1]!=pile[*psp]){
+                    pile[(*psp)-1]=1;
+                } else {
+                    pile[(*psp)-1]=0;
+                }
+                break;
+            case 2:
+                (*psp)--;
+                if (pile[(*psp)-1]>pile[*psp]){
+                    pile[(*psp)-1]=1;
+                } else {
+                    pile[(*psp)-1]=0;
+                }
+                break;
+            case 3:
+                (*psp)--;
+                if (pile[(*psp)-1]>=pile[*psp]){
+                    pile[(*psp)-1]=1;
+                } else {
+                    pile[(*psp)-1]=0;
+                }
+                break;
+            case 4:
+                (*psp)--;
+                if (pile[(*psp)-1] < pile[*psp]){
+                    pile[(*psp)-1]=1;
+                } else {
+                    pile[(*psp)-1]=0;
+                }
+                break;
+            case 5:
+                (*psp)--;
+                if (pile[(*psp)-1] <= pile[*psp]){
+                    pile[(*psp)-1]=1;
+                } else {
+                    pile[(*psp)-1]=0;
+                }
+                break;
+            case 6:
+                (*psp)--;
+                pile[(*psp)-1]=pile[(*psp)-1]&pile[*psp];
+                break;
+            case 8:
+                (*psp)--;
+                pile[(*psp)-1]=pile[(*psp)-1] ^ pile[*psp];
+                break;
+            case 9:
+                pile[(*psp)-1]= ~ pile[(*psp)-1];
+                break;
+            case 10:
+                pile[(*psp)-1] = -pile[(*psp)-1];
+                break;
+            case 11:
+                (*psp)--;
+                pile[(*psp)-1]=pile[(*psp)-1] + pile[*psp];
+                break;
+            case 12:
+                (*psp)--;
+                pile[(*psp)-1]=pile[(*psp)-1] - pile[*psp];
+                break;
+            case 13:
+                (*psp)--;
             pile[(*psp)-1]=pile[(*psp)-1] * pile[*psp];
-            break;
-    case 14:
-            (*psp)--;
-            pile[(*psp)-1]=pile[(*psp)-1] / pile[*psp];
-            break;
-    case 15:
-            (*psp)--;
-            pile[(*psp)-1]=pile[(*psp)-1] % pile[*psp];
-            break;
-    default:
-            printf("Le code d operation est incorrect, %d doit etre un entier compris entre 0 et 15 inclus", instruct.value);
-  }
+                break;
+            case 14:
+                (*psp)--;
+                pile[(*psp)-1]=pile[(*psp)-1] / pile[*psp];
+                break;
+            case 15:
+                (*psp)--;
+                pile[(*psp)-1]=pile[(*psp)-1] % pile[*psp];
+                break;
+            default:
+                *OK2 = 0;
+                printf("Le code d operation est incorrect : %d\n", instruct.value);
+        }
+    } else {
+        *OK2 = 0;
+        printf("Segmentation fault (ligne %d)\n", *ppc);
+    }
 }
 
-void halt(instructionHexa instruct, short* pile){
-
+void halt(instructionHexa instruct, short* pile, int* ppc, int len){
+    *ppc = len;
 }

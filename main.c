@@ -54,8 +54,9 @@ int main(int argc, char *argv[]){
 
 			if (fic != NULL){
 				short pile[4000];
-				int* sp;
-				*sp = 0;
+				int sp = 0;
+				int OK2 = 1;
+
 				char** Prog = malloc((len+1)*sizeof(char*));
 
 				for(int i = 0; i <= len; i++){
@@ -72,7 +73,9 @@ int main(int argc, char *argv[]){
 				}
 
 				for (int pc = 0; pc <= len; pc++){
-					fonction(tab[pc], pile, &pc, sp);
+					if (OK2 == 1) {
+						fonction(tab[pc], pile, &pc, &sp, len, &OK2);
+					}
 				}
 
 				free(tab);
