@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 void remplitStruct(instructionHexa* structu, char* instruct){
     char a[3], b[5];
@@ -34,11 +35,11 @@ void ReadLowLangageFile(FILE* fic, char** Prog){ // on presuppose que le fichier
 }
 
 void fonction(instructionHexa instruct, short* pile, int* ppc, int* psp){
-    switch(instruct.var){
+    switch(instruct.var){ // le membre instruct.var correspond au numero de la fonction
         case 0: pop(instruct, pile, ppc, psp); break;
         case 1: push(instruct, pile, ppc, psp); break;
         case 2: iPop(instruct, pile, ppc, psp); break;
-        case 3: iPush(instruct, pile, ppc, psp; break;
+        case 3: iPush(instruct, pile, ppc, psp); break;
         case 4: push2(instruct, pile, ppc, psp); break;
         case 5: call(instruct, pile, ppc); break;
         case 6: ret(instruct, pile, ppc); break;
@@ -54,131 +55,151 @@ void fonction(instructionHexa instruct, short* pile, int* ppc, int* psp){
 }
 
 void pop(instructionHexa instruct, short* pile, int* ppc, int* psp){
+    short x=instruct.value;
     if (*psp > 0){
-        *psp--;
-        pile[x] = pile[psp];
+        (*psp)--;
+        pile[x] = pile[*psp];
     } else {
         printf("Segmentation fault (ligne %d)", *ppc);
     }
 }
 
 void push(instructionHexa instruct, short* pile, int* ppc, int* psp){
-    short v=instruct->value;
-    *pile= *(pile+v);
-    pile++;
+    if ((*psp+1)>3999){
+      printf("Segmentation fault (ligne %d)",*ppc);
+    } else{
+    short v=instruct.value;
+    pile[*psp]= pile[v];
+    (*psp)++;
+    }
 }
 
 void iPop(instructionHexa instruct, short* pile, int* ppc, int* psp){
-    *(pile+(*pile))= *(pile-1);
+    int n=pile[(*psp)-1]; //n est le contenu de la tete de pile
+    pile[n]= pile[(*psp)-1];
 }
 
 void iPush(instructionHexa instruct, short* pile, int* ppc, int* psp){
-
+  if ((*psp+1)>3999){
+    printf("Segmentation fault (ligne %d)",*ppc);}
+  else
+  {
+  int n=pile[(*psp)-1];
+  pile[(*psp)]=pile[n];
+  (*psp)++;
+    }
 }
 
 void push2(instructionHexa instruct, short* pile, int* ppc, int* psp){
-    short v=instruct->value;
-    *(pile)=v;
+  if ((*psp+1)>3999){
+    printf("Segmentation fault (ligne %d)",*ppc);}
+  else
+  {
+    short v=instruct.value;
+    pile[*psp]=v;
+    (*psp)++;
+  }
 }
-
 void call(instructionHexa instruct, short* pile, int* ppc){
-    short v=instruct->value;
-    ppc++;
-    *ppc=*ppc+ v;
+    short v=instruct.value;
+    (*ppc)++;
+    *ppc= *ppc + v;
 }
 
 void ret(instructionHexa instruct, short* pile, int* ppc){
-    ppc--;
+    (*ppc)--;
 }
 
 void jmp(instructionHexa instruct, short* pile, int* ppc){
-    *ppc=*ppc+(instruct->value);
+    *ppc=*ppc+(instruct.value);
 }
 
 void jpc(instructionHexa instruct, short* pile, int* ppc, int* psp){
-    pile--; //accede a la valeur sur le tas
-    int v= *pile;
+    (*ppc)--; //accede a la valeur sur le tas
+    int v= pile[--(*psp)];
     if (v!=0){
-        *ppc=*ppc+instruct->value;
+        *ppc=*ppc+instruct.value;
     }
 }
 
 void write(instructionHexa instruct, short* pile){
-    printf("%d", *(pile+(instruct->value)));
+    printf("%d", pile[instruct.value]);
 }
 
 void read(instructionHexa instruct, short* pile){
     short x;
     printf("rentrer une valeur qui sera mise dans la variable a l adresse %d : ",instruct.value);
-    scanf("%d",&x);
-    *(pile+(instruct.value))=x;
+    scanf("%hd",&x);
+    pile[instruct.value]=x;
 }
 
 void rnd(instructionHexa instruct, short* pile, int* ppc, int* psp){
+  if ((*psp+1)>3999){
+    printf("Segmentation fault (ligne %d)",*ppc);}
+  else
+  {
     int nb=0;
     srand(time(NULL));
-    nb=rand()%(instruct->value);
-    *pile=nb;
-    pile++;
+    nb=rand()%(instruct.value);
+    pile[*psp]=nb;
+    (*psp)++;;
+  }
 }
-
 void dup(instructionHexa instruct, short* pile, int* ppc, int* psp){
 
     if ((*psp+1)<=3999){
       pile[*(psp)]=pile[*(psp)-1];
-      *(psp)++;
+      (*psp)++;
     } else{
         printf("Segmentation fault (ligne %d)", *ppc);
     }
-
-
 }
 
 void op(instructionHexa instruct, short* pile, int* ppc, int* psp){
     switch(instruct.value){
     case 0:
-            *psp--;
+            (*psp)--;
             if (pile[(*psp)-1]==pile[*psp]){
                 pile[(*psp)-1]=1;
             } else {pile[(*psp)-1]=0;}
             break;
     case 1:
-            *psp--;
+            (*psp)--;
             if (pile[(*psp)-1]!=pile[*psp]){
                 pile[(*psp)-1]=1;
             } else {pile[(*psp)-1]=0;}
             break;
 
     case 2:
-            *psp--;
+            (*psp)--;
             if (pile[(*psp)-1]>pile[*psp]){
                 pile[(*psp)-1]=1;
             } else {pile[(*psp)-1]=0;}
             break;
     case 3:
-            *psp--;
+            (*psp)--;
             if (pile[(*psp)-1]>=pile[*psp]){
                 pile[(*psp)-1]=1;
             } else {pile[(*psp)-1]=0;}
             break;
     case 4:
-            *psp--;
+            (*psp)--;
             if (pile[(*psp)-1] < pile[*psp]){
                 pile[(*psp)-1]=1;
             } else {pile[(*psp)-1]=0;}
             break;
     case 5:
-            *psp--;
+            (*psp)--;
             if (pile[(*psp)-1] <= pile[*psp]){
                 pile[(*psp)-1]=1;
             } else {pile[(*psp)-1]=0;}
             break;
     case 6:
-            *psp--;
+            (*psp)--;
             pile[(*psp)-1]=pile[(*psp)-1]&pile[*psp];
             break;
     case 8:
-            *psp--;
+            (*psp)--;
             pile[(*psp)-1]=pile[(*psp)-1] ^ pile[*psp];
             break;
     case 9:
@@ -188,23 +209,23 @@ void op(instructionHexa instruct, short* pile, int* ppc, int* psp){
             pile[(*psp)-1] = -pile[(*psp)-1];
             break;
     case 11:
-            *psp--;
+            (*psp)--;
             pile[(*psp)-1]=pile[(*psp)-1] + pile[*psp];
             break;
     case 12:
-            *psp--;
+            (*psp)--;
             pile[(*psp)-1]=pile[(*psp)-1] - pile[*psp];
             break;
     case 13:
-            *psp--;
+            (*psp)--;
             pile[(*psp)-1]=pile[(*psp)-1] * pile[*psp];
             break;
     case 14:
-            *psp--;
+            (*psp)--;
             pile[(*psp)-1]=pile[(*psp)-1] / pile[*psp];
             break;
     case 15:
-            *psp--;
+            (*psp)--;
             pile[(*psp)-1]=pile[(*psp)-1] % pile[*psp];
             break;
     default:
