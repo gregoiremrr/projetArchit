@@ -130,78 +130,78 @@ void dup(instructionHexa instruct, short* pile, int* ppc, int* psp){
 void op(instructionHexa instruct, short* pile, int* ppc, int* psp){
     switch(instruct.value){
     case 0:
-            pile--;
-            if (*(pile-1)==*pile){
-                *(pile-1)=1;
-            } else {*(pile-1)=0;}
+            *psp--;
+            if (pile[(*psp)-1]==pile[*psp]){
+                pile[(*psp)-1]=1;
+            } else {pile[(*psp)-1]=0;}
             break;
     case 1:
-            pile--;
-            if (*(pile-1)!=*pile){
-                *(pile-1)=1;
-            } else {*(pile-1)=0;}
+            *psp--;
+            if (pile[(*psp)-1]!=pile[*psp]){
+                pile[(*psp)-1]=1;
+            } else {pile[(*psp)-1]=0;}
             break;
 
     case 2:
-            pile--;
-            if (*(pile-1)> *pile){
-                *(pile-1)=1;
-            } else {*(pile-1)=0;}
+            *psp--;
+            if (pile[(*psp)-1]>pile[*psp]){
+                pile[(*psp)-1]=1;
+            } else {pile[(*psp)-1]=0;}
             break;
     case 3:
-        pile--;
-        if (*(pile-1)>= *pile){
-            *(pile-1)=1;
-        } else {*(pile-1)=0;}
-        break;
+            *psp--;
+            if (pile[(*psp)-1]>=pile[*psp]){
+                pile[(*psp)-1]=1;
+            } else {pile[(*psp)-1]=0;}
+            break;
     case 4:
-        pile--;
-        if (*(pile-1)< *pile){
-            *(pile-1)=1;
-        } else {*(pile-1)=0;}
-        break;
+            *psp--;
+            if (pile[(*psp)-1] < pile[*psp]){
+                pile[(*psp)-1]=1;
+            } else {pile[(*psp)-1]=0;}
+            break;
     case 5:
-        pile--;
-        if (*(pile-1)>= *pile){
-            *(pile-1)=1;
-        } else {*(pile-1)=0;}
-        break;
+            *psp--;
+            if (pile[(*psp)-1] <= pile[*psp]){
+                pile[(*psp)-1]=1;
+            } else {pile[(*psp)-1]=0;}
+            break;
     case 6:
-        pile--;
-        *(pile-1)=*(pile-1)&*pile;
-        break;
+            *psp--;
+            pile[(*psp)-1]=pile[(*psp)-1]&pile[*psp];
+            break;
     case 8:
-        pile--;
-        *(pile-1)=*(pile-1)|*pile;
-        break;
+            *psp--;
+            pile[(*psp)-1]=pile[(*psp)-1] ^ pile[*psp];
+            break;
     case 9:
-        *(pile-1)= ~*(pile-1);
-        break;
+            pile[(*psp)-1]= ~ pile[(*psp)-1];
+            break;
     case 10:
-        *(pile-1)=-*(pile-1);
-        break;
+            pile[(*psp)-1] = -pile[(*psp)-1];
+            break;
     case 11:
-        pile--;
-        *(pile-1)=*(pile-1)+*pile;
-        break;
+            *psp--;
+            pile[(*psp)-1]=pile[(*psp)-1] + pile[*psp];
+            break;
     case 12:
-        pile--;
-        *(pile-1)=*(pile-1) - *pile;
-        break;
+            *psp--;
+            pile[(*psp)-1]=pile[(*psp)-1] - pile[*psp];
+            break;
     case 13:
-        pile--;
-        *(pile-1)=*(pile-1)**pile;
-        break;
+            *psp--;
+            pile[(*psp)-1]=pile[(*psp)-1] * pile[*psp];
+            break;
     case 14:
-        pile--;
-        *(pile-1)=*(pile-1)/(*pile);
-        break;
+            *psp--;
+            pile[(*psp)-1]=pile[(*psp)-1] / pile[*psp];
+            break;
     case 15:
-        pile--;
-        *(pile-1)=*(pile-1)%(*pile);
-        break;
+            *psp--;
+            pile[(*psp)-1]=pile[(*psp)-1] % pile[*psp];
+            break;
     default:
-        printf("Le code d operation est incorrect, %d doit etre un entier compris entre 0 et 15 inclus", instruct.value);
+            printf("Le code d operation est incorrect, %d doit etre un entier compris entre 0 et 15 inclus", instruct.value);
   }
 }
 
