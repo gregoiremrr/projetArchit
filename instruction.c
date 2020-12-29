@@ -119,8 +119,19 @@ void convertInstruction(char* strg, Instruction* instruction, int num, int lenLi
             }
             free(value);
         } else {
-            instruction->commande->valeur = 0;
-            instruction->commande->nomValeur = NULL;
+            if (instruction->commande->id == 2 ||
+            instruction->commande->id == 3 ||
+            instruction->commande->id == 6 ||
+            instruction->commande->id == 12 ||
+            instruction->commande->id == 99) {
+                instruction->commande->valeur = 0;
+                instruction->commande->nomValeur = NULL;
+            } else {
+                *OK = 0;
+                instruction->commande->valeur = 0;
+                instruction->commande->nomValeur = NULL;
+                printf("Erreur sur le nombre d'arguments (ligne %d)\n", num + 1);
+            }
         }
         free(etiquette);
         free(instr);
@@ -140,7 +151,7 @@ void convertInstruction(char* strg, Instruction* instruction, int num, int lenLi
         i = 0;
         j = 0;
         char* instr2 = malloc(lenLigne*sizeof(char));
-        while (a[i] != ' '){
+        while (a[i] != ' ' && a[i] != '\0'){
             instr2[j] = a[i];
             j++;
             i++;
@@ -186,7 +197,6 @@ void convertInstruction(char* strg, Instruction* instruction, int num, int lenLi
             *OK = 0;
             printf("Erreur sur la commande : %s (ligne %d)\n", instr2, num + 1);
         }
-
         if (a[i] != '\0'){
             i++;
             j = 0;
@@ -213,8 +223,19 @@ void convertInstruction(char* strg, Instruction* instruction, int num, int lenLi
             }
             free(value2);
         } else {
-            instruction->commande->valeur = 0;
-            instruction->commande->nomValeur = NULL;
+            if (instruction->commande->id == 2 ||
+            instruction->commande->id == 3 ||
+            instruction->commande->id == 6 ||
+            instruction->commande->id == 12 ||
+            instruction->commande->id == 99) {
+                instruction->commande->valeur = 0;
+                instruction->commande->nomValeur = NULL;
+            } else {
+                *OK = 0;
+                instruction->commande->valeur = 0;
+                instruction->commande->nomValeur = NULL;
+                printf("Erreur sur le nombre d'arguments (ligne %d)\n", num + 1);
+            }
         }
         free(instr2);
     }
@@ -237,8 +258,8 @@ int findValue(Instruction** instructions, char* nom, int len, int* OK, int num){
         i++;
     }
     if (i==len+1){
-        printf("Erreur sur l'etiquette : %s (ligne %d)\n", nom, num + 1);
         *OK = 0;
+        printf("Erreur sur l'etiquette : %s (ligne %d)\n", nom, num + 1);
         return 0;
     }
     return i;
