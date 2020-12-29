@@ -14,7 +14,7 @@ int main(int argc, char *argv[]){
 
 		int len = sizeOfFile(fichierAssembleur);
 		int lenLigne = sizeMaxOfLine(fichierAssembleur, len);
-		
+
 		int* OK = malloc(sizeof(int));
 		*OK = 1;
 
@@ -38,7 +38,7 @@ int main(int argc, char *argv[]){
 			ecritInstructions(fichierMachine, instructions, len);
 			fclose(fichierMachine);
 		}
-		
+
 		for (int i = 0; i<len; i++){
 			free(instructions[i]->adresse->nom);
 			free(instructions[i]->commande->nomValeur);
@@ -54,7 +54,7 @@ int main(int argc, char *argv[]){
 
 			if (fic != NULL){
 				short pile[4000];
-				short* sp;
+				int* sp;
 				*sp = 0;
 				char** Prog = malloc((len+1)*sizeof(char*));
 
@@ -72,7 +72,7 @@ int main(int argc, char *argv[]){
 				}
 
 				for (int pc = 0; pc <= len; pc++){
-					fonction(tab[pc], pile, &pc);
+					fonction(tab[pc], pile, &pc, sp);
 				}
 
 				free(tab);
