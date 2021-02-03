@@ -1,0 +1,17 @@
+debut:  read 950
+        push 950
+        push# 0
+        op 0
+        jpc   debut
+        read 960
+        push 960
+        push# 0
+        op 0
+        jpc debut
+        push 950
+        push 960
+        op 13
+        pop 950
+        push 950
+        write 950
+        halt

@@ -243,7 +243,11 @@ void op(instructionHexa instruct, short* pile, int* ppc, int* psp, int* OK2){
                 break;
             case 6:
                 (*psp)--;
-                pile[(*psp)-1]=pile[(*psp)-1]&pile[*psp];
+                pile[(*psp)-1]=pile[(*psp)-1] & pile[*psp];
+                break;
+            case 7:
+                (*psp)--;
+                pile[(*psp)-1]=pile[(*psp)-1] | pile[*psp];
                 break;
             case 8:
                 (*psp)--;
