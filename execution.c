@@ -191,7 +191,7 @@ void dup(instructionHexa instruct, short* pile, int* ppc, int* psp, int* OK2){
 }
 
 void op(instructionHexa instruct, short* pile, int* ppc, int* psp, int* OK2){
-    if (*psp > 1 || instruct.value == 9 || instruct.value == 10) {
+    if (*psp > 1 || (instruct.value == 9 && *psp > 0) || (instruct.value == 10 && *psp > 0)) {
         switch(instruct.value){
             case 0:
                 (*psp)--;
