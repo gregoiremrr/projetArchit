@@ -1,0 +1,22 @@
+debut: read 100
+    push 100
+    push# 16384
+    pop 101
+    push 101
+    call puis2
+    write 101
+fin: halt
+puis2: pop 3999
+puis2bis: op 6
+    push# 0
+    op 0
+    jpc div2
+  push 3999
+  ret
+div2: push 101
+    push# 2
+    op 14
+    pop 101
+    push 100
+    push 101
+    jmp puis2bis

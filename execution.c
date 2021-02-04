@@ -51,7 +51,7 @@ void fonction(instructionHexa instruct, short* pile, int* ppc, int* psp, int len
         case 12: dup(instruct, pile, ppc, psp, OK2); break;
         case 13: op(instruct, pile, ppc, psp, OK2); break;
         case 99: halt(instruct, pile, ppc, len);
-  }
+    }
 }
 
 void pop(instructionHexa instruct, short* pile, int* ppc, int* psp, int* OK2){
@@ -121,8 +121,9 @@ void call(instructionHexa instruct, short* pile, int* ppc, int* psp, int len, in
 
 void ret(instructionHexa instruct, short* pile, int* ppc, int* psp, int* OK2){
     if (*psp > 0) {
-        (*ppc)--;
+        (*psp)--;
         *ppc = pile[*psp];
+        (*ppc)--;
     } else {
         *OK2 = 0;
         printf("Segmentation fault (ligne %d)\n", *ppc);

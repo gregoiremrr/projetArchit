@@ -1,0 +1,27 @@
+debut: push# 0
+    push# 1
+    pop 201
+    push# 0
+    pop 200
+    pop 101
+    read 100
+    call fibo
+fin: halt
+fibo: push 100
+    push 101
+    write 200
+    op 5
+    jpc fin
+        push 200
+        push 201
+        op 11
+        pop 202
+        push 201
+        pop 200
+        push 202
+        pop 201
+        push 101
+        push# 1
+        op 11
+        pop 101
+        jmp fibo
