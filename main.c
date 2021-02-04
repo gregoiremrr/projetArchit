@@ -12,7 +12,7 @@ int main(int argc, char *argv[]){
 
 	if (fichierAssembleur != NULL){
 
-		int len = sizeOfFile(fichierAssembleur);
+		int len = sizeOfFile(fichierAssembleur) - 1;
 		int lenLigne = sizeMaxOfLine(fichierAssembleur, len);
 
 		int* OK = malloc(sizeof(int));

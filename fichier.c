@@ -3,15 +3,18 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 void recupInstructions(FILE* fichier, Instruction** instructions, int len, int lenLigne, int* OK){
     char* instruction = malloc((lenLigne+1)*sizeof(char));
-    int i = 0;
+    int j = 0;
     rewind(fichier);
-    while(i <= len){
+    while(j <= len){
         scanLigne(fichier, instruction);
-        convertInstruction(instruction, instructions[i], i, lenLigne, OK);
-        i++;
+        if (strlen(instruction) != 0) {
+            convertInstruction(instruction, instructions[j], j, lenLigne, OK);
+            j++;
+        }
     }
     free(instruction);
 }
@@ -23,15 +26,16 @@ void ecritInstructions(FILE* fichier, Instruction** instructions, int len){
 }
 
 int sizeOfFile(FILE* fichier){
-    int i = 0;
-    char a = 'a';
+    int len = 0;
+    char ligne[100];
     rewind(fichier);
-    while(a != EOF){
-        if (a == '\n')
-            i++;
-        a = fgetc(fichier);
+    while(fgets(ligne, 81, fichier) != NULL){
+        if (strlen(ligne) != 1) {
+            len++;
+        }
     }
-    return i;
+    rewind(fichier);
+    return len;
 }
 
 int sizeMaxOfLine(FILE* fichier, int len){
