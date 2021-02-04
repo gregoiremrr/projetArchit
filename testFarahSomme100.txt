@@ -1,0 +1,22 @@
+read 1000
+      push 1000
+      push# 0
+      op 11
+      pop 1050
+      write 1050
+      call verif
+continue: read 1100
+      push 1100
+      push 1050
+      op 11
+      pop 1050
+      write 1050
+      call verif
+fin:  write 1050
+      halt
+verif: push# 100
+      push 1050
+      op 3
+      jpc continue
+      jmp fin
+      ret

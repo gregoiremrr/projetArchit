@@ -34,7 +34,7 @@ int main(int argc, char *argv[]){
 
 		if (*OK==1){
 			printf("Compilation reussie ! Fichier hexa.txt cree !\n");
-			FILE* fichierMachine = fopen("hexa.txt","w");
+			FILE* fichierMachine = fopen("hexa.txt","w+");
 			ecritInstructions(fichierMachine, instructions, len);
 			fclose(fichierMachine);
 		}

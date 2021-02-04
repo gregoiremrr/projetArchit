@@ -1,0 +1,10 @@
+debut: read 950
+    push# 950
+    iPush
+    push# 2
+    op 15
+    push# 0
+    op 1
+    jpc debut
+    write 950
+    halt
