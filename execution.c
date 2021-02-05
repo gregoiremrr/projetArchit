@@ -162,7 +162,7 @@ void write(instructionHexa instruct, short* pile, int* ppc, int* OK2){
 
 void read(instructionHexa instruct, short* pile, int* ppc, int* OK2){
     if (instruct.value < 4000 && instruct.value > -1) {
-        printf("Rentrer une valeur : ");
+        printf("Rentrer une valeur : \n-> ");
         scanf("%hd", pile + instruct.value);
     } else {
         *OK2 = 0;
