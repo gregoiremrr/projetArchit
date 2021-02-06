@@ -8,7 +8,7 @@
 
 int max(int a, int b){
     return (a>=b?a:b);
-}
+} 
 
 void convertInstruction(char* strg, Instruction* instruction, int num, int lenLigne, int* OK){
 
