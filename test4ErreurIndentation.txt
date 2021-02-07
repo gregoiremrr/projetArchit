@@ -1,4 +1,4 @@
- 1ici: read 1000
+1ici: read 1000
     push 1000
      push# 0
     op 0

@@ -8,7 +8,7 @@
 
 int max(int a, int b){
     return (a>=b?a:b);
-} 
+}
 
 void convertInstruction(char* strg, Instruction* instruction, int num, int lenLigne, int* OK){
 
@@ -307,12 +307,15 @@ int isNumber(char* strg){
 }
 
 int isNumberLetter(char* strg){
-    int i = 0;
+    int i = 1;
     while(strg[i] != '\0'){
         if(!isdigit(strg[i]) && !isalpha(strg[i])){
             return 0;
         }
         i++;
+    }
+    if (!isalpha(strg[i])) {
+        return 0;
     }
     return 1;
 }
