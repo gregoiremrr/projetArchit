@@ -314,7 +314,7 @@ int isNumberLetter(char* strg){
         }
         i++;
     }
-    if (!isalpha(strg[i])) {
+    if (!isalpha(strg[0])) {
         return 0;
     }
     return 1;
