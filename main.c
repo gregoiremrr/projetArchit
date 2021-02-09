@@ -26,7 +26,7 @@ int main(int argc, char *argv[]){
 			instructions[i]->commande->nomValeur = malloc(lenLigne*sizeof(char));
 			instructions[i]->adresse->nom = malloc(lenLigne*sizeof(char));
 		}
-
+		printf("len = %d et lenLigne = %d\n", len, lenLigne);
 		recupInstructions(fichierAssembleur, instructions, len, lenLigne, OK);
 
 		fclose(fichierAssembleur);
@@ -39,7 +39,7 @@ int main(int argc, char *argv[]){
 			fclose(fichierMachine);
 		}
 
-		for (int i = 0; i<len; i++){
+		for (int i = 0; i < len+1; i++){
 			free(instructions[i]->adresse->nom);
 			free(instructions[i]->commande->nomValeur);
 			free(instructions[i]->adresse);
